@@ -12,5 +12,8 @@
   "description": "",
   "devDependencies": {
     "electron": "^34.1.1"
+  },
+  "dependencies": {
+    "graphemer": "^1.4.0"
   }
 }

@@ -7,9 +7,9 @@ document.addEventListener('DOMContentLoaded', () => {
         '`': '़', '1': '१', '2': '२', '3': '३', '4': '४', '5': '५', '6': '६', '7': '७', '8': '८', '9': '९', '0': '०',
         '-': 'ञ', '=': 'ृ',
         'q': 'ु', 'w': 'ू', 'e': 'म', 'r': 'त', 't': 'ज', 'y': 'ल', 'u': 'न', 'i': 'प', 'o': 'व', 'p': 'च',
-        '[': 'ख्', ']': ',',
+        '[': 'ख्', ']': ',','\\':'ृ' ,
         'a': 'ं', 's': 'े', 'd': 'क', 'f': 'ि', 'g': 'ह', 'h': 'ी', 'j': 'र', 'k': 'ा', 'l': 'स', ';': 'य', "'": "श्",
-        'z': 'ऽ', 'x': 'ग', 'c': 'ब', 'v': 'अ', 'b': 'इ', 'n': 'छ', 'm': 'उ', ',': 'ए', '.': 'ण्', '/': 'ध्'
+        'z': '्र', 'x': 'ग', 'c': 'ब', 'v': 'अ', 'b': 'इ', 'n': 'छ', 'm': 'उ', ',': 'ए', '.': 'ण्', '/': 'ध्'
     };
 
     // Define shift key mappings for special characters
@@ -17,9 +17,9 @@ document.addEventListener('DOMContentLoaded', () => {
         '`': 'ङ', '1': '|', '2': '/', '3': ':', '4': 'ऱ्', '5': '-', '6': '"', '7': "'", '8': 'द्य', '9': 'त्र', '0': 'ऋ',
         '-': 'ञ', '=': '्',
         'q': 'फ', 'w': 'ध', 'e': 'म्', 'r': 'त्', 't': 'ज्', 'y': 'ल्', 'u': 'न्', 'i': 'प्', 'o': 'व्', 'p': 'च्',
-        '[': 'क्ष्', ']': 'द्य',
-        'a': '', 's': 'ै', 'd': 'क्', 'f': 'थ्', 'g': 'ळ', 'h': 'भ्', 'j': 'श्र', 'k': 'ज्ञ', 'l': 'स्', ';': 'य्',
-        'z': 'र्', 
+        '[': 'क्ष्', ']': 'द्य','\\':'्',
+        'a': '', 's': 'ै', 'd': 'क्', 'f': 'थ्', 'g': 'ळ', 'h': 'भ्', 'j': 'श्र', 'k': 'ज्ञ', 'l': 'स्', ';': 'य्', "'":'ष्',
+        'z': '्', 
         'x': 'ग्', 'c': 'ब्', 'v': 'ट', 'b': 'ठ', 'n': 'ण', 'm': 'ड', ',': 'ढ', '.': 'झ', '/': 'घ्'
     };
 
@@ -90,13 +90,41 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Handle conversion of "अ" to "आ" when pressing 'k'
-        if (key === 'k') {
-            if (start > 0 && text[start - 1] === 'अ') {
-                editor.value = text.slice(0, start - 1) + 'आ' + text.slice(end);
-                editor.selectionStart = editor.selectionEnd = start;
-                return;
-            }
+        // Handle "k" (ा) input after a halant (्) to remove the halant instead of adding "ा"
+if (key === 'k') {
+    if (start > 0) {
+        let lastChar = text[start - 1];
+
+        // If last character is a halant "्", just remove it
+        if (lastChar === '्') {
+            editor.value = text.slice(0, start - 1) + text.slice(end);
+            editor.selectionStart = editor.selectionEnd = start - 1;
+            return;
         }
+    }
+}
+
+// Handle "k" (ा) input after a halant (्) or अ
+if (key === 'k') {
+    if (start > 0) {
+        let lastChar = text[start - 1];
+
+        // If last character is a halant "्", remove it (for half-letters)
+        if (lastChar === '्') {
+            editor.value = text.slice(0, start - 1) + text.slice(end);
+            editor.selectionStart = editor.selectionEnd = start - 1;
+            return;
+        }
+
+        // If last character is "अ", replace "अ" with "आ"
+        if (lastChar === 'अ') {
+            editor.value = text.slice(0, start - 1) + 'आ' + text.slice(end);
+            editor.selectionStart = editor.selectionEnd = start;
+            return;
+        }
+    }
+}
+
 
         // Check if Shift key is pressed and apply shiftKeyMap
         if (event.shiftKey && shiftKeyMap[key]) {
@@ -112,3 +140,4 @@ document.addEventListener('DOMContentLoaded', () => {
         editor.selectionStart = editor.selectionEnd = start + output.length;
     });
 });
+

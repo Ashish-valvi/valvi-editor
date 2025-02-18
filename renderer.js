@@ -140,4 +140,3 @@ if (key === 'k') {
         editor.selectionStart = editor.selectionEnd = start + output.length;
     });
 });
-
